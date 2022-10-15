@@ -10,7 +10,7 @@ public class ForceBody : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
 
     [SerializeField] private float offset;
-    [SerializeField] private Vector3 velocity;
+    [SerializeField] public Vector3 velocity;
 
     [SerializeField] private float BoxSize = 2;
 
@@ -19,11 +19,12 @@ public class ForceBody : MonoBehaviour
     private void FixedUpdate()
     {
         ApplyGravity();
+        ApplyVelocity();
     }
 
     private void SetPosition(Vector3 desiredPos)
     {
-        Vector3 lastPos = transform.position += new Vector3(0, offset, 0);
+        Vector3 lastPos = transform.position += new Vector3(gravityScale.x * offset, gravityScale.y * offset, gravityScale.z * offset);
 
         if (CheckCollision(desiredPos)) transform.position = lastPos;
         else transform.position = desiredPos;
@@ -31,19 +32,38 @@ public class ForceBody : MonoBehaviour
 
     private bool CheckCollision(Vector3 desiredPos)
     {
-        //Collider[] hitColliders = Physics.OverlapBox(desiredPos, transform.localScale * BoxSize, Quaternion.identity, groundLayer);
-        var a = Physics.Raycast(transform.position, desiredPos, (transform.position - desiredPos).magnitude, groundLayer);
-        Debug.DrawRay(transform.position, desiredPos, Color.blue);
+        Collider[] hitColliders = Physics.OverlapBox(desiredPos, transform.localScale * BoxSize, Quaternion.identity, groundLayer);
+        
         visual.transform.position = desiredPos;
-        return a;
+        return hitColliders.Length > 0;
     }
 
     private void ApplyGravity()
     {
         if (!hasGravity) return;
 
-        var newVelocity = (velocity / 10) + (-gravityScale / 10);
-        var desiredPos = transform.position += newVelocity;
+        var newVelocity = -gravityScale;
+
+        var desiredPosX = transform.position.x + newVelocity.x;
+        var desiredPosY = transform.position.y + newVelocity.y;
+        var desiredPosZ = transform.position.z + newVelocity.z;
+
+        print(desiredPosX + ", " + desiredPosY + ", " + desiredPosZ);  
+
+        var desiredPos = new Vector3(desiredPosX, desiredPosY, desiredPosZ);
+
+        SetPosition(desiredPos);
+    }
+
+    private void ApplyVelocity()
+    {
+        var desiredPosX = transform.position.x + velocity.x;
+        var desiredPosY = transform.position.y + velocity.y;
+        var desiredPosZ = transform.position.z + velocity.z;
+
+        print(desiredPosX + ", " + desiredPosY + ", " + desiredPosZ);
+
+        var desiredPos = new Vector3(desiredPosX, desiredPosY, desiredPosZ);
 
         SetPosition(desiredPos);
     }
