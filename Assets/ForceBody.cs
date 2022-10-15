@@ -12,6 +12,10 @@ public class ForceBody : MonoBehaviour
     [SerializeField] private float offset;
     [SerializeField] private Vector3 velocity;
 
+    [SerializeField] private float BoxSize = 2;
+
+    [SerializeField] private GameObject visual;
+
     private void FixedUpdate()
     {
         ApplyGravity();
@@ -27,17 +31,26 @@ public class ForceBody : MonoBehaviour
 
     private bool CheckCollision(Vector3 desiredPos)
     {
-        Collider[] hitColliders = Physics.OverlapBox(desiredPos, transform.localScale / 2, Quaternion.identity, groundLayer);
-        return hitColliders.Length > 0;
+        //Collider[] hitColliders = Physics.OverlapBox(desiredPos, transform.localScale * BoxSize, Quaternion.identity, groundLayer);
+        var a = Physics.Raycast(transform.position, desiredPos, (transform.position - desiredPos).magnitude, groundLayer);
+        Debug.DrawRay(transform.position, desiredPos, Color.blue);
+        visual.transform.position = desiredPos;
+        return a;
     }
 
     private void ApplyGravity()
     {
         if (!hasGravity) return;
 
-        var newVelocity = velocity + (-gravityScale/10);
+        var newVelocity = (velocity / 10) + (-gravityScale / 10);
         var desiredPos = transform.position += newVelocity;
 
         SetPosition(desiredPos);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireCube(transform.position, transform.localScale);
     }
 }
