@@ -5,20 +5,12 @@ using UnityEngine.UIElements;
 
 public class ForceBody : MonoBehaviour
 {
-    [SerializeField] private float mass;
-
     [SerializeField] private bool hasGravity;
     [SerializeField] private Vector3 gravityScale;
     [SerializeField] private LayerMask groundLayer;
 
     [SerializeField] private float offset;
-
-    private bool _isColliding;
-
-    private void Update()
-    {
-        CheckCollision();
-    }
+    [SerializeField] private Vector3 velocity;
 
     private void FixedUpdate()
     {
@@ -27,33 +19,25 @@ public class ForceBody : MonoBehaviour
 
     private void SetPosition(Vector3 desiredPos)
     {
-        Vector3 lastPos = transform.position;
+        Vector3 lastPos = transform.position += new Vector3(0, offset, 0);
 
-        if (_isColliding) transform.position = lastPos += new Vector3(0,offset,0);
+        if (CheckCollision(desiredPos)) transform.position = lastPos;
         else transform.position = desiredPos;
     }
 
-    private void CheckCollision()
+    private bool CheckCollision(Vector3 desiredPos)
     {
-        Collider[] hitColliders = Physics.OverlapBox(gameObject.transform.position, transform.localScale / 2, Quaternion.identity, groundLayer);
-        _isColliding = hitColliders.Length > 0;
-    }
-
-    private bool CheckDesiredVelocity(Vector3 desiredPos)
-    {
-        var check = Physics.Raycast(desiredPos, desiredPos, .1f, groundLayer);
-        print(check);
-        return check;
+        Collider[] hitColliders = Physics.OverlapBox(desiredPos, transform.localScale / 2, Quaternion.identity, groundLayer);
+        return hitColliders.Length > 0;
     }
 
     private void ApplyGravity()
     {
         if (!hasGravity) return;
 
-        var velocity = (-gravityScale / 5) / mass;
-        var desiredPos = transform.position += velocity;
+        var newVelocity = velocity + (-gravityScale/10);
+        var desiredPos = transform.position += newVelocity;
 
-        //if (CheckDesiredVelocity(desiredPos)) return;
         SetPosition(desiredPos);
     }
 }
