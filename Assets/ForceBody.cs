@@ -5,13 +5,20 @@ using UnityEngine.UIElements;
 
 public class ForceBody : MonoBehaviour
 {
+    [Header(" ")]
     [SerializeField] private bool hasGravity;
     [SerializeField] private Vector3 gravityScale;
+
+    [Header(" ")]
     [SerializeField] private LayerMask groundLayer;
 
+    [Header(" ")]
     [SerializeField] private float offset;
+
+    [Header(" ")]
     [SerializeField] public Vector3 velocity;
 
+    [Header(" ")]
     [SerializeField] private float BoxSize = 2;
 
     [SerializeField] private GameObject visual;
@@ -33,7 +40,6 @@ public class ForceBody : MonoBehaviour
     private bool CheckCollision(Vector3 desiredPos)
     {
         Collider[] hitColliders = Physics.OverlapBox(desiredPos, transform.localScale * BoxSize, Quaternion.identity, groundLayer);
-        
         visual.transform.position = desiredPos;
         return hitColliders.Length > 0;
     }
@@ -42,30 +48,16 @@ public class ForceBody : MonoBehaviour
     {
         if (!hasGravity) return;
 
-        var newVelocity = -gravityScale;
-
-        var desiredPosX = transform.position.x + newVelocity.x;
-        var desiredPosY = transform.position.y + newVelocity.y;
-        var desiredPosZ = transform.position.z + newVelocity.z;
-
-        print(desiredPosX + ", " + desiredPosY + ", " + desiredPosZ);  
-
-        var desiredPos = new Vector3(desiredPosX, desiredPosY, desiredPosZ);
+        var desiredPos = transform.position + -gravityScale;
 
         SetPosition(desiredPos);
     }
 
     private void ApplyVelocity()
     {
-        var desiredPosX = transform.position.x + velocity.x;
-        var desiredPosY = transform.position.y + velocity.y;
-        var desiredPosZ = transform.position.z + velocity.z;
+        var desiredVelocity = transform.position + velocity;
 
-        print(desiredPosX + ", " + desiredPosY + ", " + desiredPosZ);
-
-        var desiredPos = new Vector3(desiredPosX, desiredPosY, desiredPosZ);
-
-        SetPosition(desiredPos);
+        SetPosition(desiredVelocity);
     }
 
     private void OnDrawGizmos()
