@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class ForceSystem : MonoBehaviour
 {
-    private List<ForceBody> _forceBodies = new List<ForceBody>();
+    private List<PhysicsBody> _forceBodies = new List<PhysicsBody>();
 
     private void Awake()
     {
-        _forceBodies.Add(FindObjectOfType<ForceBody>());
+        _forceBodies.Add(FindObjectOfType<PhysicsBody>());
     }
 }

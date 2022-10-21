@@ -697,7 +697,7 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
-  offset: 0.01
+  offset: {x: 0, y: 0.1, z: 0}
   velocity: {x: 0, y: 0, z: 0}
   BoxSize: 0.5
   visual: {fileID: 1911299503}
