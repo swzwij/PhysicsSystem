@@ -692,15 +692,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 589b548d8aea0fd48b5dc2311c167691, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  visual: {fileID: 1911299503}
   hasGravity: 1
-  gravityScale: {x: 0, y: 0.1, z: 0}
+  gravityScale: 0.1
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
   offset: {x: 0, y: 0.1, z: 0}
-  velocity: {x: 0, y: 0, z: 0}
-  BoxSize: 0.5
-  visual: {fileID: 1911299503}
 --- !u!23 &1281159847
 MeshRenderer:
   m_ObjectHideFlags: 0

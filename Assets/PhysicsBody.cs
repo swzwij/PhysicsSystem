@@ -6,26 +6,31 @@ using UnityEngine.UIElements;
 
 public class PhysicsBody : MonoBehaviour
 {
-    [Header(" ")]
-    [SerializeField] private bool hasGravity;
-    [SerializeField] private Vector3 gravityScale;
+    [SerializeField] private GameObject visual;
 
-    [Header(" ")]
+
+    [Header("Gravity")]
+    [SerializeField] private bool hasGravity;
+    [SerializeField] private float gravityScale;
+
     [SerializeField] private LayerMask groundLayer;
 
-    [Header(" ")]
     [SerializeField] private Vector3 offset;
 
-    [Header(" ")]
-    [SerializeField] public Vector3 velocity;
 
-    [Header(" ")]
-    [SerializeField] private float BoxSize = 2;
+    private Vector3 velocity;
 
-    [SerializeField] private GameObject visual;
+    private int sleepCounter;
+    public bool isSleeping => sleepCounter > 0;
 
     private void FixedUpdate()
     {
+        if(isSleeping)
+        {
+            sleepCounter--;
+            return;
+        }
+
         ApplyVelocity();
     }
 
@@ -67,10 +72,27 @@ public class PhysicsBody : MonoBehaviour
 
     private void ApplyVelocity()
     {
-        var desiredVelocity = velocity + -gravityScale;
+        var desiredVelocity = velocity + new Vector3(0, -gravityScale, 0);
 
         SetPosition(desiredVelocity);
     }
+
+    public void SetVelocity(Vector3 vel)
+    {
+        velocity = vel;
+    }
+
+    #region Sleeping
+    public void Sleep(int frames)
+    {
+        if (!isSleeping) sleepCounter = frames;
+    }
+
+    public void WakeUp()
+    {
+        sleepCounter = 0;
+    }
+    #endregion
 
     private void OnDrawGizmos()
     {
