@@ -32,6 +32,7 @@ public class PhysicsBody : MonoBehaviour
         }
 
         ApplyVelocity();
+        ApplyGravity();
     }
 
     private void SetPosition(Vector3 desiredVelocity)
@@ -49,18 +50,19 @@ public class PhysicsBody : MonoBehaviour
 
         float length = 0;
 
-        if (desiredVelocity.magnitude >= .6f) length = desiredVelocity.magnitude;
+        if (desiredVelocity.magnitude >= .55f) length = desiredVelocity.magnitude;
         else length = .6f;
 
-        var p = Physics.Raycast(fromPos, dir, length, groundLayer);
+        var p = Physics.Raycast(fromPos, dir, length);
         //Collider[] hitColliders = Physics.OverlapBox(toPos, transform.localScale * BoxSize, Quaternion.identity, groundLayer);
         visual.transform.position = toPos;
 
         if (p)
         {
             RaycastHit hit;
-            Physics.Raycast(toPos, Vector3.up, out hit, length, groundLayer);
+            Physics.Raycast(toPos, Vector3.up, out hit, length);
             var b = hit.point + fromPos;
+            
             print(b += offset);
             return b += offset;
         }
@@ -72,7 +74,14 @@ public class PhysicsBody : MonoBehaviour
 
     private void ApplyVelocity()
     {
-        var desiredVelocity = velocity + new Vector3(0, -gravityScale, 0);
+        var desiredVelocity = velocity;
+
+        SetPosition(desiredVelocity);
+    }
+
+    private void ApplyGravity()
+    {
+        var desiredVelocity = new Vector3(0, -gravityScale, 0);
 
         SetPosition(desiredVelocity);
     }

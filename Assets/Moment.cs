@@ -20,5 +20,6 @@ public class Moment : MonoBehaviour
         }
         else s = 0;
         body.SetVelocity(new Vector3(Input.GetAxisRaw("Horizontal"), s, Input.GetAxisRaw("Vertical")));
+
     }
 }
