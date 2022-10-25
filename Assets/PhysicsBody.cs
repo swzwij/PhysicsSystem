@@ -45,7 +45,7 @@ public class PhysicsBody : MonoBehaviour
 
     private Vector3 CheckCollision(Vector3 desiredVelocity)
     {
-        // get length from current position to desired position
+        //* get length from current position to desired position
         // move a cast along the lentgh with steps
         // if finaly a step returns true (hits collider) set position to last step
         // if it went trough all steps without returning true move to desired pos
@@ -54,7 +54,7 @@ public class PhysicsBody : MonoBehaviour
         Vector3 desiredPos = transform.position + desiredVelocity;
         Vector3 dir = desiredPos - currentPos;
 
-        float length = desiredVelocity.magnitude;
+        float length = 1;
 
         if(Physics.Raycast(currentPos, dir, length))
         {
@@ -68,7 +68,7 @@ public class PhysicsBody : MonoBehaviour
 
     private void ApplyVelocity()
     {
-        SetPosition(velocity);
+        SetPosition(velocity.normalized);
     }
 
     private void ApplyGravity()
