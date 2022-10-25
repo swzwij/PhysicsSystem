@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TreeEditor;
+using UnityEditor.Build.Reporting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -43,40 +45,30 @@ public class PhysicsBody : MonoBehaviour
 
     private Vector3 CheckCollision(Vector3 desiredVelocity)
     {
-        Vector3 fromPos = transform.position;
-        Vector3 toPos = transform.position + desiredVelocity;
-        Vector3 dir = toPos - fromPos;
-        Vector3 dir2 = fromPos - toPos;
+        // get length from current position to desired position
+        // move a cast along the lentgh with steps
+        // if finaly a step returns true (hits collider) set position to last step
+        // if it went trough all steps without returning true move to desired pos
+        
+        Vector3 currentPos = transform.position;
+        Vector3 desiredPos = transform.position + desiredVelocity;
+        Vector3 dir = desiredPos - currentPos;
 
-        float length = 0;
+        float length = desiredVelocity.magnitude;
 
-        if (desiredVelocity.magnitude >= .55f) length = desiredVelocity.magnitude;
-        else length = .6f;
-
-        var p = Physics.Raycast(fromPos, dir, length);
-        //Collider[] hitColliders = Physics.OverlapBox(toPos, transform.localScale * BoxSize, Quaternion.identity, groundLayer);
-        visual.transform.position = toPos;
-
-        if (p)
+        if(Physics.Raycast(currentPos, dir, length))
         {
-            RaycastHit hit;
-            Physics.Raycast(toPos, Vector3.up, out hit, length);
-            var b = hit.point + fromPos;
-            
-            print(b += offset);
-            return b += offset;
+            return currentPos;
         }
         else
         {
-            return toPos;
+            return desiredPos;
         }
     }
 
     private void ApplyVelocity()
     {
-        var desiredVelocity = velocity;
-
-        SetPosition(desiredVelocity);
+        SetPosition(velocity);
     }
 
     private void ApplyGravity()
